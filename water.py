@@ -146,17 +146,30 @@ def plot(last=72, st=None):
     # plt.show()
 
 
+class Command(Enum):
+    redraw = 0  # 默认，总是重绘并打开水位图
+    show = 1  # 有新的数据才重绘，总是打开水位图
+    silent = 2  # 有新的数据才重绘，不打开水位图
+
+
 if __name__ == "__main__":
     print(f"run at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
-    if download() or len(sys.argv) > 1:
+    cmd = Command.redraw
+    if len(sys.argv) > 1:
+        try:
+            cmd = Command(int(sys.argv[1]))
+        except ValueError:
+            cmd = Command.redraw
+
+    if download() or cmd == Command.redraw:
         #       寸滩          宜昌        汉口        九江
         st = ['60105400', '60107300', '60112200', '60113400',
               '62601600', '60106980', '60803000', '61802700']
         #        鄱阳湖     三峡水库      乌江	    丹江口水库
         plot(0, st)
 
-    if len(sys.argv) > 1:
+    if cmd != Command.silent:
         from PIL import Image
         im = Image.open('last.png')
         im.show()
