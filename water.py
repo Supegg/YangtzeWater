@@ -8,6 +8,7 @@ import math
 import sys
 import matplotlib.pyplot as plt
 from datetime import datetime
+from enum import Enum
 
 
 def download():
@@ -29,13 +30,36 @@ def download():
 
 
 def text(lx, ly):
+    '''
+    显示y值
+    '''
     for x, y in zip(lx, ly):
         plt.text(x, y, y, ha='center', va='bottom', fontsize=14)
 
 
-def plot(last=48, st=None):
+def text_diff(lx, ly):
     '''
-    last:过去last小时的水位，默认48\n
+    显示最大水位差
+    '''
+    dy = round(max(ly) - min(ly), 2)
+    plt.text(lx[math.ceil(len(lx) * 0.6)], min(ly) + dy * 0.8,
+             f'最大水位差 {dy} 米', ha='center', va='bottom', fontsize=28, color='red')
+
+
+def sparse_xtick(step):
+    '''
+    稀疏x刻度，每 <step> 显示一个
+    '''
+    i = 0
+    for l in plt.gca().get_xticklabels():
+        if i % step != 0:
+            l.set_visible(False)
+        i += 1
+
+
+def plot(last=72, st=None):
+    '''
+    last:过去last小时的水位，默认72。0，绘制全部数据\n
     st:  绘图的水文站列表。默认None，全部绘制
     '''
     datas = dict()
@@ -48,7 +72,7 @@ def plot(last=48, st=None):
     sxoq = []
     hjq = []
     hjoq = []
-    pdatas = sorted(datas)[-48:]
+    pdatas = sorted(datas)[-1 * last:]
     for fd in pdatas:
         d = {}
         with open(datas[fd], 'r', encoding='utf-8') as f:
@@ -82,7 +106,7 @@ def plot(last=48, st=None):
 
     step = 1
     while True:
-        if last / step > 20:
+        if len(pdatas) / step > 32:
             step += 1
         else:
             break
@@ -95,6 +119,8 @@ def plot(last=48, st=None):
             lastx, s['z'], label=f"{s['name']}-{s['stcd']}", markerfacecolor='r', marker='o')
         plt.legend(loc='upper left', fontsize=32)
         text(lastx[::step], s['z'][::step])
+        text_diff(lastx, s['z'])
+        sparse_xtick(step)
         i += 1
 
     # 三峡出入库
@@ -104,6 +130,7 @@ def plot(last=48, st=None):
     plt.legend(loc='upper left', fontsize=32)
     text(lastx[::step], sxq[::step])
     text(lastx[::step], sxoq[::step])
+    sparse_xtick(step)
     i += 1
 
     # 丹江口出入库
@@ -113,6 +140,7 @@ def plot(last=48, st=None):
     plt.legend(loc='upper left', fontsize=32)
     text(lastx[::step], hjq[::step])
     text(lastx[::step], hjoq[::step])
+    sparse_xtick(step)
 
     plt.savefig('last.png', dpi=96)
     # plt.show()
@@ -120,12 +148,13 @@ def plot(last=48, st=None):
 
 if __name__ == "__main__":
     print(f"run at {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    if download():
+
+    if download() or len(sys.argv) > 1:
         #       寸滩          宜昌        汉口        九江
         st = ['60105400', '60107300', '60112200', '60113400',
               '62601600', '60106980', '60803000', '61802700']
         #        鄱阳湖     三峡水库      乌江	    丹江口水库
-        plot(48, st)
+        plot(0, st)
 
     if len(sys.argv) > 1:
         from PIL import Image
