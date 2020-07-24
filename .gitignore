@@ -1,4 +1,5 @@
-log.txt
+run.log
+web.log
 .vscode/
  
 # Byte-compiled / optimized / DLL files
