@@ -57,9 +57,9 @@ def sparse_xtick(step):
         i += 1
 
 
-def plot(last=72, st=None):
+def plot(last=360, st=None):
     '''
-    last:过去last小时的水位，默认72。0，绘制全部数据\n
+    last:过去last小时的水位，默认360， 15天。0，绘制全部数据\n
     st:  绘图的水文站列表。默认None，全部绘制
     '''
     datas = dict()
@@ -167,7 +167,7 @@ if __name__ == "__main__":
         st = ['60105400', '60107300', '60112200', '60113400',
               '62601600', '60106980', '60803000', '61802700']
         #        鄱阳湖     三峡水库      乌江	    丹江口水库
-        plot(0, st)
+        plot(360, st)
 
     if cmd != Command.silent:
         from PIL import Image
