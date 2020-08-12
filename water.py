@@ -78,7 +78,7 @@ def plot(last=360, st=None):
         with open(datas[fd], 'r', encoding='utf-8') as f:
             d = json.load(f)
 
-        lastx.append(time.strftime("%d%H", time.localtime(d[0]["tm"]/1000)))
+        lastx.append(time.strftime("%m%d%H", time.localtime(d[0]["tm"]/1000)))
         for s in d:
             if st is None or s['stcd'] in st:
                 if not s['stcd'] in lasty.keys():
