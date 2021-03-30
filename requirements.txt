@@ -1,3 +1,4 @@
+autopep8==1.5.3
 certifi==2020.6.20
 chardet==3.0.4
 cycler==0.10.0
@@ -5,9 +6,11 @@ idna==2.10
 kiwisolver==1.2.0
 matplotlib==3.3.0
 numpy==1.19.0
-Pillow==7.2.0
+Pillow==8.1.2
+pycodestyle==2.6.0
 pyparsing==2.4.7
 python-dateutil==2.8.1
 requests==2.24.0
 six==1.15.0
+toml==0.10.1
 urllib3==1.25.9
